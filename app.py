@@ -10,10 +10,21 @@ from linebot.models import (
     MessageEvent, TextMessage, TextSendMessage,
 )
 
+# 環境変数取得
+import os
+from os.path import join, dirname
+from dotenv import load_dotenv
+
 app = Flask(__name__)
 
-line_bot_api = LineBotApi('YOUR_CHANNEL_ACCESS_TOKEN')
-handler = WebhookHandler('YOUR_CHANNEL_SECRET')
+dotenv_path = join(dirname(__file__), '.env')
+load_dotenv(dotenv_path)
+
+channel_access_token = os.environ.get('YOUR_CHANNEL_ACCESS_TOKEN')
+channel_secret = os.environ.get('YOUR_CHANNEL_SECRET')
+
+line_bot_api = LineBotApi(channel_access_token)
+handler = WebhookHandler(channel_secret)
 
 
 @app.route("/callback", methods=['POST'])
