@@ -1,0 +1,8 @@
+# 仮想環境
+env
+
+# 環境変数定義
+.env
+
+# VsCode
+.vscode
