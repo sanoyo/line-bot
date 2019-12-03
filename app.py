@@ -52,10 +52,11 @@ def callback():
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
+    # 配信したいURIを設定
+    url = 'https://speakerdeck.com/niisantokyo/tagufu-kedepuroifalsehua?slide=21'
     line_bot_api.reply_message(
         event.reply_token,
-        TextSendMessage(text=event.message.text))
-
+        TextSendMessage(text=url))
 
 if __name__ == "__main__":
     app.run()
