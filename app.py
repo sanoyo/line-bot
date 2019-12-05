@@ -7,7 +7,7 @@ from linebot.exceptions import (
     InvalidSignatureError
 )
 from linebot.models import (
-    MessageEvent, TextMessage, TextSendMessage,
+    MessageEvent, TextMessage, TextSendMessage, BeaconEvent
 )
 
 # 環境変数取得
@@ -29,6 +29,9 @@ handler = WebhookHandler(channel_secret)
 
 @app.route("/")
 def hello_world():
+    signature = request.headers['X-Line-Signature']
+    body = request.get_data(as_text=True)
+
     return "hello world!"
 
 @app.route("/callback", methods=['POST'])
@@ -37,6 +40,8 @@ def callback():
     signature = request.headers['X-Line-Signature']
 
     # get request body as text
+    # a = Beacon()
+    # test = BeaconEvent()
     body = request.get_data(as_text=True)
     app.logger.info("Request body: " + body)
 
@@ -50,13 +55,20 @@ def callback():
     return 'OK'
 
 
-@handler.add(MessageEvent, message=TextMessage)
-def handle_message(event):
-    # 配信したいURIを設定
-    url = 'https://speakerdeck.com/niisantokyo/tagufu-kedepuroifalsehua?slide=21'
+@handler.add(BeaconEvent, message=None)
+def handle_beacon(event):
+    url = 'https://speakerdeck.com/niisantokyo/tagufu-kedepuroifalsehua'
     line_bot_api.reply_message(
         event.reply_token,
         TextSendMessage(text=url))
+
+# @handler.add(MessageEvent, message=TextMessage)
+# def handle_message(event):
+#     # 配信したいURIを設定
+#     url = 'https://speakerdeck.com/niisantokyo/tagufu-kedepuroifalsehua'
+#     line_bot_api.reply_message(
+#         event.reply_token,
+#         TextSendMessage(text=url))
 
 if __name__ == "__main__":
     app.run()
