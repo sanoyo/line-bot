@@ -40,8 +40,6 @@ def callback():
     signature = request.headers['X-Line-Signature']
 
     # get request body as text
-    # a = Beacon()
-    # test = BeaconEvent()
     body = request.get_data(as_text=True)
     app.logger.info("Request body: " + body)
 
@@ -55,20 +53,22 @@ def callback():
     return 'OK'
 
 
-@handler.add(BeaconEvent, message=None)
+@handler.add(BeaconEvent)
 def handle_beacon(event):
+    line_bot_api.reply_message(
+        event.reply_token,
+        TextSendMessage(
+            text='Got beacon event. hwid={}, device_message(hex string)={}'.format(
+                event.beacon.hwid, event.beacon.dm)))
+
+
+@handler.add(MessageEvent, message=TextMessage)
+def handle_message(event):
+    # 配信したいURIを設定
     url = 'https://speakerdeck.com/niisantokyo/tagufu-kedepuroifalsehua'
     line_bot_api.reply_message(
         event.reply_token,
         TextSendMessage(text=url))
-
-# @handler.add(MessageEvent, message=TextMessage)
-# def handle_message(event):
-#     # 配信したいURIを設定
-#     url = 'https://speakerdeck.com/niisantokyo/tagufu-kedepuroifalsehua'
-#     line_bot_api.reply_message(
-#         event.reply_token,
-#         TextSendMessage(text=url))
 
 if __name__ == "__main__":
     app.run()
